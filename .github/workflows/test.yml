@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  push:
+    paths:
+      - '**'
+      - '!README.md'
+      - '!LICENSE.txt'
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: 'windows-latest', compiler: 'msvc' }
+          - { os: 'ubuntu-latest', compiler: 'gcc' }
+          - { os: 'ubuntu-latest', compiler: 'clang' }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Build Dependencies (Linux + Clang)
+        if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'clang'
+        run: sudo apt install libc++-dev libc++abi-dev
+
+      - name: Enable Developer Command Prompt (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Configure
+        run: |
+          cp .github/workflows/scripts/* .
+          cmake --preset=${{ matrix.os }}-${{ matrix.compiler }}
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Run Tests
+        run: ctest --test-dir build
