@@ -6,9 +6,6 @@
       "inherits": "default",
       "cacheVariables": {
         "FLAG_ENUM_TEST": "ON"
-      },
-      "environment": {
-        "VCPKG_ROOT": "$env{VCPKG_INSTALLATION_ROOT}"
       }
     },
     {

@@ -18,10 +18,6 @@ project(flag_enum
 option(FLAG_ENUM_USE_STD_MODULE "Use standard library module" ON)
 option(FLAG_ENUM_TEST "Enable test targets" OFF)
 
-# ----- External Dependencies -----
-
-find_package(boost_container CONFIG REQUIRED)
-
 # ----- flag_enum -----
 
 add_library(flag_enum)
@@ -30,7 +26,6 @@ target_sources(flag_enum PUBLIC
     FILES flag_enum.cppm
 )
 target_compile_features(flag_enum PUBLIC cxx_std_23)
-target_link_libraries(flag_enum PRIVATE Boost::container)
 
 add_library(flag_enum::flag_enum ALIAS flag_enum)
 

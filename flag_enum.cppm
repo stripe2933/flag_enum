@@ -4,13 +4,12 @@ module;
 
 #if __cpp_lib_modules < 202207L
 #include <cstdint>
+#include <array>
 #include <bit>
 #include <format>
 #include <type_traits>
 #include <utility>
 #endif
-
-#include <boost/container/static_vector.hpp>
 
 export module flag_enum;
 
@@ -114,24 +113,25 @@ struct std::formatter<Flags<BitType>, CharT> : formatter<BitType, CharT> {
         constexpr typename Flags<BitType>::MaskType allFlagMask { FlagTraits<BitType>::allFlags };
         constexpr std::size_t flagCount = std::popcount(allFlagMask);
 
-        boost::container::static_vector<BitType, flagCount> flagBits;
+        std::array<BitType, flagCount> flagBits;
+        std::size_t flagBitCount = 0;
         typename Flags<BitType>::MaskType bitmask { 1 };
         for (std::size_t i = 0; i < flagCount; bitmask <<= 1) {
             if (allFlagMask & bitmask) {
                 if (flagMask & bitmask) {
-                    flagBits.push_back(static_cast<BitType>(bitmask));
+                    flagBits[flagBitCount++] = static_cast<BitType>(bitmask);
                 }
                 ++i;
             }
         }
 
-        if (!flagBits.empty()) {
+        if (flagBitCount > 0) {
             std::size_t i = 0;
-            for (; i < flagBits.size() - 1; ++i) {
+            for (; i < flagBitCount - 1; ++i) {
                 formatter<BitType, CharT>::format(flagBits[i], ctx);
                 format_to(ctx.out(), " | ");
             }
-            formatter<BitType, CharT>::format(flagBits.back(), ctx);
+            formatter<BitType, CharT>::format(flagBits[i], ctx);
         }
 
         return ctx.out();

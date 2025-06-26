@@ -87,10 +87,6 @@ CPMAddPackage("gh:stripe2933/flag_enum@0.1.0")
 target_link_libraries(<target> PRIVATE flag_enum::flag_enum)
 ```
 
-## Dependency
-
-- [boost-container](https://github.com/boostorg/container)
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE.txt) file for details.
